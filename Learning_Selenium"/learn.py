@@ -463,7 +463,7 @@ Handling JQuery dropdown  [ In jquery dropdown we can see multiple sub options ]
 Handling Radio buttons and Checkbox fields
 
 
-2 commands  = = = >
+2 commands  = = = >    
 
 is_selected()
 click()
@@ -877,4 +877,41 @@ for i in link:
     actions.key_down(Keys.CONTROL).click(i).key_up(Keys.CONTROL).perform()
 
 ######################################################################
+Handling Auto suggestive Dropdowns
+
+
+driver.get("https://www.makemytrip.com/")
+
+driver.find_element(By.ID,enter id).send_keys("g")
+
+actions=ActionChains(driver)
+
+actions.send_keys(Keys.ARROW_DOWN).send_keys(Keys.ARROW_DOWN).send_keys(Keys.Enter).perform()
+
+######################################################################
+Resizing an element
+
+
+driver.get("https://www.jqueryui.com/resizable/")
+
+driver.maximize_window()
+
+time.sleep(2)
+
+fr=driver.find_element(By.XPATH,"/html/body/div/div[2]/div/div[1]/iframe")
+
+time.sleep(2)
+
+driver.switch_to.frame(fr)
+
+actions=ActionChains(driver)
+
+dd=driver.find_element(By.XPATH,"/html/body/div/div[3]")
+
+actions.drag_and_drop_by_offset(dd,80,100).perform()
+
+#####################################################################
+Handling JQuery Right Click Menu
+
+
 
