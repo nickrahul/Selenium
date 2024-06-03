@@ -914,4 +914,227 @@ actions.drag_and_drop_by_offset(dd,80,100).perform()
 Handling JQuery Right Click Menu
 
 
+actions=ActionChains(driver)
+
+driver.get("http://swisnl.github.io/jQuery-contextMenu/demo.html")
+
+time.sleep(3)
+
+aa=driver.find_element(By.XPATH,"/html/body/div/section/div/div/div/p/span")
+
+actions.context_click(aa).perform()
+
+time.sleep(3)
+
+quits=driver.find_element(By.XPATH,"/html/body/ul/li[7]")
+
+#####################################################################
+pause() ActionChains command 
+
+
+driver.get("http://tutorialsninja.com/demo/index.php?route=account/register")
+
+time.sleep(3)
+
+driver.find_element(By.ID,"input-firstname").send_keys("Bhupi")
+
+actions.send_keys(Keys.TAB).pause(3).send_keys("Dhillon").send_keys(Keys.TAB).pause(3).send_keys("BhupiDhillon@gmail.com").send_keys(Keys.TAB).pause(3).send_keys("9872676364").send_keys(Keys.TAB).pause(3).send_keys("123456").send_keys(Keys.TAB).pause(3).send_keys("123456").send_keys(Keys.TAB).pause(3).send_keys(Keys.TAB).send_keys(Keys.TAB).send_keys(Keys.SPACE).send_keys(Keys.TAB).send_keys(Keys.ENTER).perform()
+
+####################################################################
+Taking screenshot of a Web Element
+
+
+driver.get("http://tutorialsninja.com/demo/index.php?route=account/register")
+
+time.sleep(3)
+
+aa=driver.find_element(By.XPATH,"//*[@id='account-register']/ul/li[1]/a")
+
+aa.screenshot("img.png")
+
+####################################################################
+Taking screenshot of a section
+
+
+driver.get("https://omayo.blogspot.com/")
+
+aa=driver.find_element(By.XPATH,"/html/body/div[4]/div[2]/div[2]/div[2]/div[2]/div[2]/div[2]/div/div[4]/div[3]/div/aside/div[1]/div[11]")
+
+aa.screenshot("ele.png")
+
+####################################################################
+####################################################################
+Executing JavaScript code
+
+
+driver.get("https://omayo.blogspot.com/")
+
+time.sleep(3)
+
+driver.execute_script("alert('Rahul Sharma')")
+
+####################################################################
+Another example
+
+
+driver.get("https://omayo.blogspot.com/")
+
+time.sleep(3)
+
+aa=driver.execute_script("alert('Akash got 50lpa package')")
+
+time.sleep(3)
+
+ab=driver.switch_to.alert
+
+ab.accept()
+
+####################################################################
+Finding the total height of a web page
+
+
+driver.get("https://omayo.blogspot.com/")
+
+time.sleep(3)
+
+aa=driver.execute_script("return Math.max(document.body.scrollHeight,document.body.offsetHeight,document.documentElement.clientHeight,document.documentElement.scrollHeight,document.documentElement.offsetHeight);")
+
+####################################################################
+Executing Selenium Python scripts on Chrome Browser in Headless mode
+
+
+s=Service("chromedriver.exe")
+
+chrome_options = Options()
+chrome_options.add_argument("--headless")  
+chrome_options.add_argument("--disable-gpu") 
+chrome_options.add_argument("--window-size=1920,1080")
+
+driver=webdriver.Chrome(service=s,options=chrome_options)
+
+driver.get("https://instagram.com")
+
+aa=driver.find_element(By.XPATH,"/html/body/div[2]/div/div/div[2]/div/div/div[1]/section/main/article/div[2]/div[1]/div[1]/div/i")
+print(aa.text)
+
+time.sleep(3)
+
+aa.screenshot("insta.png")
+
+#####################################################################
+Taking full page screenshot 
+
+
+s=Service("chromedriver.exe")
+opt=Options()
+
+opt.add_argument("--headless")
+
+driver=webdriver.Chrome(service=s,options=opt)
+
+driver.get("https://omayo.blogspot.com/")
+
+
+width=1920
+height=driver.execute_script("return Math.max(document.body.scrollHeight,document.body.offsetHeight,document.documentElement.clientHeight,document.documentElement.scrollHeight,document.documentElement.offsetHeight);")
+
+driver.set_window_size(width,height)
+
+aa=driver.find_element(By.XPATH,"/html/body")
+
+aa.screenshot("full.png")
+
+#####################################################################
+Start Chrome Browser in maximized mode using ChromeOptions
+
+
+s=Service("chromedriver.exe")
+chrome_options=Options()
+chrome_options.add_argument("--start-maximized")
+
+driver=webdriver.Chrome(service=s,options=chrome_options)
+
+driver.get("https://omayo.blogspot.com/")
+
+#####################################################################
+Start Chrome Browser in full screen mode using ChromeOptions 
+
+
+s=Service("chromedriver.exe")
+chrome_options=Options()
+chrome_options.add_argument("--kiosk")
+
+driver=webdriver.Chrome(service=s,options=chrome_options)
+
+driver.get("https://omayo.blogspot.com/")
+
+####################################################################
+Handling Multiple Windows or Multiple Tab 
+
+
+s=Service("chromedriver.exe")
+chrome_options=Options()
+chrome_options.add_argument("--start-maximized")
+
+driver=webdriver.Chrome(service=s,options=chrome_options)
+
+driver.get("https://omayo.blogspot.com/")
+
+parent_window=driver.current_window_handle
+
+driver.find_element(By.XPATH,"//*[@id='HTML37']/div[1]/p/a").click()
+
+
+windows=driver.window_handles
+
+for w in windows:
+    driver.switch_to.window(w)
+    time.sleep(2)
+    if driver.title=="New Window":
+        aa=driver.find_element(By.XPATH,"/html/body/div")
+        print(aa.text)
+        driver.close()
+        break
+
+
+driver.switch_to.window(parent_window)
+
+time.sleep(3)
+
+driver.find_element(By.ID,"ta1").send_keys("Hey Akash")
+
+####################################################################
+Using new window command   
+
+
+
+driver.switch_to.new_window('tab') [ WE CAN USE TAB ALSO ]
+
+
+driver.get("https://omayo.blogspot.com/")
+
+print(driver.title)
+
+time.sleep(5)
+
+driver.switch_to.new_window('window')
+
+driver.get("https://selenium143.blogspot.com/")
+
+print(driver.title)
+
+###################################################################
+Waiting Mechanism - Implicit and Explicit 
+
+
+driver.implicitly_wait(10)  [ its wait 10 seconds of all elements to search ]
+
+
+
+
+
+
+
+
+
 
