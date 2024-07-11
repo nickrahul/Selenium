@@ -973,6 +973,7 @@ time.sleep(3)
 
 driver.execute_script("alert('Rahul Sharma')")
 
+
 ####################################################################
 Another example
 
@@ -989,6 +990,7 @@ ab=driver.switch_to.alert
 
 ab.accept()
 
+
 ####################################################################
 Finding the total height of a web page
 
@@ -998,6 +1000,7 @@ driver.get("https://omayo.blogspot.com/")
 time.sleep(3)
 
 aa=driver.execute_script("return Math.max(document.body.scrollHeight,document.body.offsetHeight,document.documentElement.clientHeight,document.documentElement.scrollHeight,document.documentElement.offsetHeight);")
+
 
 ####################################################################
 Executing Selenium Python scripts on Chrome Browser in Headless mode
@@ -1020,6 +1023,7 @@ print(aa.text)
 time.sleep(3)
 
 aa.screenshot("insta.png")
+
 
 #####################################################################
 Taking full page screenshot 
@@ -1044,6 +1048,7 @@ aa=driver.find_element(By.XPATH,"/html/body")
 
 aa.screenshot("full.png")
 
+
 #####################################################################
 Start Chrome Browser in maximized mode using ChromeOptions
 
@@ -1056,6 +1061,7 @@ driver=webdriver.Chrome(service=s,options=chrome_options)
 
 driver.get("https://omayo.blogspot.com/")
 
+
 #####################################################################
 Start Chrome Browser in full screen mode using ChromeOptions 
 
@@ -1067,6 +1073,7 @@ chrome_options.add_argument("--kiosk")
 driver=webdriver.Chrome(service=s,options=chrome_options)
 
 driver.get("https://omayo.blogspot.com/")
+
 
 ####################################################################
 Handling Multiple Windows or Multiple Tab 
@@ -1107,9 +1114,7 @@ driver.find_element(By.ID,"ta1").send_keys("Hey Akash")
 Using new window command   
 
 
-
 driver.switch_to.new_window('tab') [ WE CAN USE TAB ALSO ]
-
 
 driver.get("https://omayo.blogspot.com/")
 
@@ -1122,6 +1127,7 @@ driver.switch_to.new_window('window')
 driver.get("https://selenium143.blogspot.com/")
 
 print(driver.title)
+
 
 ###################################################################
 Waiting Mechanism - Implicit and Explicit 
@@ -1140,6 +1146,229 @@ driver.find_element(By.CLASS_NAME,"dropbtn").click()
 wait=WebDriverWait(driver,20)
 flip=wait.until(EC.visibility_of_element_located((By.LINK_TEXT,"Flipkart")))
 flip.click()
+
+
+###################################################################
+
+# Fluent Wait [ it is same as explicit wait but differnet is add some arguments in webdriverwait class ]
+# Not used in real time
+from selenium.common import NoSuchElementException
+wait=WebDriverWait(driver,timeout=30,poll_frequency=5,ignored_exceptions=[NoSuchElementException])
+flip=wait.until(EC.visibility_of_element_located((By.LINK_TEXT,"Flipkart")))
+flip.click()
+
+##################################################################
+# Wait for an Element to be Visible 
+wait.until(EC.visibility_of_element_located((By.LINK_TEXT,"Flipkart"))) # wait until element will be displayed on the webpage .
+
+
+##################################################################
+# Wait for the Presence of Element
+flip=wait.until(EC.presence_of_element_located((By.LINK_TEXT,"Flipkart"))) 
+
+# above both visible and presence are same
+
+##################################################################
+# Wait for the Element to be Clickable
+wait=WebDriverWait(driver,30)
+radi=wait.until(EC.element_to_be_clickable((By.ID,"dte")))
+radi.click()
+
+
+##################################################################
+# Wait for an element to be invisible
+driver.get("https://the-internet.herokuapp.com/dynamic_loading/1")
+
+driver.find_element(By.XPATH,"/html/body/div[2]/div/div/div[1]/button").click()
+
+wait=WebDriverWait(driver,30)
+progress_section=wait.until(EC.invisibility_of_element_located((By.ID,"loading")))
+
+ab=driver.find_element(By.XPATH,"/html/body/div[2]/div/div/div[3]/h4")
+print(ab.text)
+
+
+##################################################################
+# Wait for an Alert to be Displayed
+wait=WebDriverWait(driver,10)
+wait.until(EC.alert_is_present())
+
+
+##################################################################
+# Handling Ajax Calls 
+"""Web page make ajax calls , to retrieve small amount of data from server without the need for reloading the page . """
+# Selenium Webdriver handles Ajax calls using waiting mechanism
+
+
+##################################################################
+# Handling Dynamic Xpath Expression
+driver.get("http://www.omayo.blogspot.com")
+
+ul=driver.find_element(By.XPATH,"/html/body/div[4]/div[2]/div[2]/div[2]/div[2]/div[2]/div[2]/div/div[4]/div[3]/div/aside/div[1]/div[11]/div/ul").find_elements(By.TAG_NAME,"li")
+
+for i in range(1,len(ul)+1):
+    link=driver.find_element(By.XPATH,f"//*[@id='LinkList1']/div/ul/li[{i}]/a").click()
+    time.sleep(2)
+    driver.back()
+    time.sleep(2)
+
+
+##################################################################
+# Handling Calender 
+driver.get("https://www.hyrtutorials.com/p/calendar-practice.html")
+
+driver.find_element(By.CLASS_NAME,"ui-datepicker-trigger").click()
+
+wait=WebDriverWait(driver,10)
+wait.until(EC.visibility_of_element_located((By.ID,"ui-datepicker-div")))
+
+def date_time(month,year,day):
+    month1=driver.find_element(By.CLASS_NAME,"ui-datepicker-month").text
+    year1=driver.find_element(By.CLASS_NAME,"ui-datepicker-year").text
+    while True:
+        if month1==month and year1==year:
+            break
+        driver.find_element(By.XPATH,"/html/body/div[3]/div/a[2]").click()
+        month1=driver.find_element(By.CLASS_NAME,"ui-datepicker-month").text
+        year1=driver.find_element(By.CLASS_NAME,"ui-datepicker-year").text
+        
+    table=driver.find_element(By.XPATH,"/html/body/div[3]/table/tbody").find_elements(By.TAG_NAME,"tr")
+    print("done")
+    for i in table:
+        for j in i.find_elements(By.TAG_NAME,"td"):
+            if j.text==day:
+                j.click()
+
+date_time("November","2024","11")
+
+
+##################################################################
+# Handling Calender Type 1 Using Javascript
+driver.get("https://seleniumpractise.blogspot.com/2016/08/how-to-handle-calendar-in-selenium.html")
+
+driver.execute_script("document.getElementById('datepicker').value='07/11/2024'")
+
+
+##################################################################
+# Handling calender type 2
+driver.get("https://www.path2usa.com/travel-companion/")
+
+time.sleep(5)
+
+driver.find_element(By.NAME,"form_fields[travel_comp_date]").click()
+
+wait=WebDriverWait(driver,10)
+wait.until(EC.visibility_of_element_located((By.XPATH,"/html/body/div[11]")))
+
+driver.maximize_window()
+
+month=driver.find_element(By.XPATH,'/html/body/div[11]/div[1]/div/span').text
+
+while month!="October":
+    driver.find_element(By.XPATH,"/html/body/div[11]/div[1]/span[2]").click()
+    month=driver.find_element(By.XPATH,'/html/body/div[11]/div[1]/div/span').text
+
+time.sleep(5)
+for i in driver.find_element(By.CLASS_NAME,"dayContainer").find_elements(By.CLASS_NAME,"flatpickr-day "):
+    print(i.text)
+    if i.text=="7":
+        i.click()
+        break
+
+
+##################################################################
+# Handling Calender type 3
+driver.get("https://demo.guru99.com/test/")
+
+driver.find_element(By.NAME,"bdaytime").send_keys("08111998")
+time.sleep(3)
+action.send_keys(Keys.TAB).perform()
+time.sleep(4)
+driver.find_element(By.NAME,"bdaytime").send_keys("1210AM")
+action.send_keys(Keys.TAB).perform()
+time.sleep(4)
+action.send_keys(Keys.ENTER).perform()
+
+
+##################################################################
+# Handling Calender type 4
+driver.get("https://www.hyrtutorials.com/p/calendar-practice.html")
+
+driver.find_element(By.ID,"third_date_picker").click()
+
+wait=WebDriverWait(driver,10)
+wait.until(EC.visibility_of_element_located((By.ID,"ui-datepicker-div")))
+
+monthh=driver.find_element(By.CLASS_NAME,"ui-datepicker-month")
+s=Select(monthh)
+s.select_by_visible_text("Nov")
+
+time.sleep(3)
+
+year=driver.find_element(By.CLASS_NAME,"ui-datepicker-year")
+s=Select(year)
+s.select_by_visible_text("2028")
+
+time.sleep(5)
+
+dates=driver.find_element(By.XPATH,"/html/body/div[3]/table/tbody").find_elements(By.TAG_NAME,"tr")
+for i in dates:
+    for j in i.find_elements(By.TAG_NAME,"td"):
+        if j.text:
+            if j.text=="7":
+                j.click()
+                break
+
+
+##################################################################
+# Retrieving table headings from table
+driver.get("http://www.omayo.blogspot.com")
+
+th=driver.find_element(By.XPATH,"/html/body/div[4]/div[2]/div[2]/div[2]/div[2]/div[2]/div[2]/div/div[4]/div[1]/div/div/div[4]/div[1]/table/thead/tr").find_elements(By.TAG_NAME,"th")
+
+for i in th:
+    print(i.text)
+
+
+##################################################################
+# Retrieving table data from table
+driver.get("http://www.omayo.blogspot.com")
+
+th=driver.find_element(By.XPATH,"/html/body/div[4]/div[2]/div[2]/div[2]/div[2]/div[2]/div[2]/div/div[4]/div[1]/div/div/div[4]/div[1]/table/tbody").find_elements(By.TAG_NAME,"tr")
+
+for i in th:
+    for j in i.find_elements(By.TAG_NAME,"td"):
+        print(i.text,end="\t")
+        break
+    print()
+
+
+##################################################################
+# Retrieving Table data in first row from Table
+driver.get("http://www.omayo.blogspot.com")
+
+th=driver.find_element(By.XPATH,"/html/body/div[4]/div[2]/div[2]/div[2]/div[2]/div[2]/div[2]/div/div[4]/div[1]/div/div/div[4]/div[1]/table/tbody/tr[1]").find_elements(By.TAG_NAME,("td"))
+
+for i in th:
+    print(i.text)
+
+
+##################################################################
+# Printing the entire table
+driver.get("http://www.omayo.blogspot.com")
+
+table=driver.find_element(By.ID,"table1").find_elements(By.TAG_NAME,"tr")
+a=1
+for i in table:
+    if a==1:
+        for j in i.find_elements(By.TAG_NAME,"th"):
+            print(j.text,end="\t")
+    for k in i.find_elements(By.TAG_NAME,"td"):
+        print(k.text,end="\t")
+    print()
+    a+=1
+
+##################################################################
 
 
 
