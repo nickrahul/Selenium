@@ -1131,6 +1131,16 @@ Waiting Mechanism - Implicit and Explicit
 # Implicit 
 driver.implicitly_wait(10)  [ its wait 10 seconds of all elements to search ]
 
+from selenium.webdriver.support.wait import WebDriverWait
+from selenium.webdriver.support import expected_conditions as EC
+driver.get("http://www.omayo.blogspot.com")
+
+driver.find_element(By.CLASS_NAME,"dropbtn").click()
+
+wait=WebDriverWait(driver,20)
+flip=wait.until(EC.visibility_of_element_located((By.LINK_TEXT,"Flipkart")))
+flip.click()
+
 
 
 
