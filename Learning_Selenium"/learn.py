@@ -1126,7 +1126,9 @@ print(driver.title)
 ###################################################################
 Waiting Mechanism - Implicit and Explicit 
 
-
+# In Python time.sleep(2) is a hard way mechanism to pause program
+# In Selenium two types of wait mechanism Implicit , Explicit .
+# Implicit 
 driver.implicitly_wait(10)  [ its wait 10 seconds of all elements to search ]
 
 
