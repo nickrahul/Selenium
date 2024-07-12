@@ -1368,11 +1368,116 @@ for i in table:
     print()
     a+=1
 
+
 ##################################################################
 
 
+# JavaScript Executor
+driver.execute_script("alert('This is a alert')") # Its just a alert shown on web page.
+driver.execute_script("prompt('Enter Your Name : ')") # It is like a input getting from user .
+driver.execute_script("confirm('Plz confirm it')") # It is like a confirm or not but it gives Boolean Value.
 
 
+##################################################################
+# DOM Document Object Model
+
+#       Methods
+# document.getElementById()
+# document.getElementsByClassName()[Index_number]
+# document.getElementsByTagName()[Index_number]
+# document.getElementsByName()[Index_number]
+# document.document.querySelector(".#")
+# click()
+
+
+#       Properties
+# .innerHtml , .text  for getting text
+# .id  for getting id
+# .value
+# document.title
+# document.URL
+
+
+#       HTML DOM style object 
+# .style.color='red'
+# .style.background='green'
+
+
+##################################################################
+# Using JavaScript for clicking an element 
+# 2 Ways
+driver.execute_script('document.getElementById("alert1").click()')
+
+button=driver.find_element(By.XPATH,'/html/body/div[4]/div[2]/div[2]/div[2]/div[2]/div[2]/div[2]/div/div[4]/div[3]/div/aside/div[1]/div[16]/div[1]/input[1]')
+button2=driver.find_element(By.XPATH,"/html/body/div[4]/div[2]/div[2]/div[2]/div[2]/div[2]/div[2]/div/div[4]/div[3]/div/aside/div[1]/div[16]/div[1]/input[3]")
+driver.execute_script("arguments[0].click(); arguments[1].click();", button, button2)
+
+
+##################################################################
+# Flashing an element using JavaScript
+def flash_color(ele):
+    for i in range(1,11):
+        driver.execute_script("arguments[0].style.background='red'",ele)
+        time.sleep(0.5)
+        driver.execute_script("arguments[0].style.background='blue'",ele)
+        default_color=ele.value_of_css_property("background-color")
+        driver.execute_script(f"arguments[0].style.background='{default_color}'",ele)
+    
+ele=driver.find_element(By.XPATH,"/html/body/div[4]/div[2]/div[2]/div[2]/div[2]/div[2]/div[2]/div/div[4]/div[1]/div/div/div[1]/div[1]/div/h2/span")
+flash_color(ele)
+
+
+##################################################################
+# Highlighting an element with a border
+# 1ST Way
+driver.execute_script("arguments[0].style.border='3px solid red'",ele)
+# 2ND Way
+driver.execute_script('document.getElementsByTagName("a")[11].style.border="5px solid red"')
+
+
+##################################################################
+# Retrieving title of the Page
+driver.execute_script("return document.title")
+
+
+##################################################################
+# Retrieving URL of the Page
+driver.execute_script("return document.URL")
+
+
+##################################################################
+# Enter text into the Text Fields using JavaScript
+search_input=driver.find_element(By.NAME,"search")
+driver.execute_script("arguments[0].value='HP'",search_input)
+
+
+##################################################################
+# Refreshing a web page using JavaScript
+# history.go(0)
+
+driver.execute_script("history.go(0)")
+
+
+##################################################################
+# Scrolling the page until element is visible using JavaScript
+ele=driver.find_element(By.XPATH,"/html/body/div[4]/div[2]/div[2]/div[2]/div[2]/div[2]/div[2]/div/div[4]/div[3]/div/aside/div[1]/div[18]/div[1]/div/button")
+
+driver.execute_script("arguments[0].scrollIntoView(true)",ele)
+
+
+##################################################################
+# Scrolling till the end of the Page
+height=driver.execute_script("return document.documentElement.scrollHeight")
+
+driver.execute_script(f"window.scrollTo(0,{height})")
+
+
+##################################################################
+# Scrapping the text from Page
+driver.execute_script("document.documentElement.innerText")
+
+
+##################################################################
 
 
 
