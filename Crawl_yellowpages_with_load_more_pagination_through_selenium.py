@@ -100,8 +100,8 @@ class Crawl:
         print(len(links))
         self.dataaa.extend(links)
         
-        # for j in links:
-        #     self.detail_page(j)
+        for j in links:
+            self.detail_page(j)
 
 
     def detail_page(self,j):
