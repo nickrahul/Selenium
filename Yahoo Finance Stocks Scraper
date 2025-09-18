@@ -1,0 +1,101 @@
+from selenium import webdriver
+import time
+from selenium.webdriver.support.ui import WebDriverWait # for explicit wait
+from selenium.webdriver.support import expected_conditions as EC # for expected conditions
+from selenium.webdriver.common.by import By     # for using different types of locators
+from selenium.webdriver import ActionChains # for mouse and keyboard actions
+import pandas as pd
+
+
+
+
+class StocksScraper:
+    def __init__(self,driver,timeout=10):
+        self.driver = driver
+        self.wait = WebDriverWait(driver,timeout)
+        self.data = []
+
+    def wait_for_page_load(self):
+        try:
+            self.wait.until(lambda x: x.execute_script("return document.readyState") == "complete")
+        except Exception as e:
+            print("Page did not load within 10 seconds")
+        else:
+            print("Page loaded successfully")
+
+    def access_url(self,url):
+        self.driver.get(url)
+        self.wait_for_page_load()
+
+    def access_most_active_stocks(self):
+        actions = ActionChains(self.driver)
+        menu = self.wait.until(EC.presence_of_element_located((By.XPATH, '//*[@id="ybar-navigation"]/div/ul/li[3]/a')))
+        actions.move_to_element(menu).perform()
+        self.wait_for_page_load()
+
+        trending_tickers = self.wait.until(EC.element_to_be_clickable((By.XPATH, '//*[@id="ybar-navigation"]/div/ul/li[3]/div/ul/li[4]/a')))
+        trending_tickers.click()
+        self.wait_for_page_load()
+
+        most_active = self.wait.until(EC.element_to_be_clickable((By.XPATH, '//*[@id="main-content-wrapper"]/section[1]/div/nav/ul/li[1]/a/span')))
+        most_active.click()
+        self.wait_for_page_load()
+
+
+    def extract_stock_data(self):
+        while True:
+            self.wait.until(EC.presence_of_element_located((By.TAG_NAME, 'table')))
+            rows = driver.find_elements(By.CSS_SELECTOR, 'table tbody tr')
+            for row in rows:
+                cols = row.find_elements(By.TAG_NAME, 'td')
+                stock_data = {
+                    "Symbol": cols[0].text,
+                    "Name": cols[1].text,
+                    "Price": cols[3].text,
+                    "Change": cols[4].text,
+                    "% Change": cols[5].text,
+                    "Volume": cols[6].text,
+                    "Avg Volume": cols[7].text,
+                    "Market_Cap": cols[8].text,
+                    "PE_Ratio": cols[9].text
+                }
+                self.data.append(stock_data)
+                print(len(self.data))
+
+            # pagination
+            try:
+                next_button = self.wait.until(EC.element_to_be_clickable((By.XPATH, '//*[@id="main-content-wrapper"]/section[1]/div/div[3]/div[3]/button[3]')))
+            except:
+                print("No more pages")
+                break
+            else:
+                next_button.click() 
+                time.sleep(2)
+        
+    def clean_and_save_data(self,file_name="temp"):
+        df = (
+            pd.DataFrame(self.data)
+            .apply(lambda x: x.str.strip() if x.dtype == "object" else x)
+            .assign(
+                Price=lambda df_: pd.to_numeric(df_["Price"], errors="coerce"),
+                Change=lambda df_: pd.to_numeric(df_["Change"].astype(str).str.replace("+", "", regex=False), errors="coerce"),
+                Volume=lambda df_: pd.to_numeric(df_["Volume"].astype(str).str.replace("M", ""), errors="coerce"), 
+
+            )
+            .rename(columns={"Price": "Price_USD", "Volume": "Volume_Million"})
+        )
+        df.to_excel(f"{file_name}.xlsx", index=False) 
+        
+
+
+if __name__ == "__main__":
+    driver = webdriver.Chrome()
+    driver.maximize_window() 
+    url = "https://finance.yahoo.com/"
+    scraper = StocksScraper(driver,10)
+    scraper.access_url(url)
+    scraper.access_most_active_stocks()
+    scraper.extract_stock_data()
+    scraper.clean_and_save_data("yahoo_finance-stocks")
+    time.sleep(5)
+    driver.quit()
